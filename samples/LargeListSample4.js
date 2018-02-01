@@ -47,7 +47,7 @@ class LargeListSample4 extends React.Component {
         <LargeList
           ref={ref => (this.listRef = ref)}
           style={{ flex: 4 }}
-          numberOfSections={foods.length}
+          numberOfSections={()=>foods.length}
           numberOfRowsInSection={section => foods[section].list.length}
           heightForSection={() => 36}
           renderSection={this.renderSection.bind(this)}
@@ -70,7 +70,11 @@ class LargeListSample4 extends React.Component {
           alignItems: "center"
         }}
         onPress={() => {
-          this.listRef.scrollToIndexPath({ section: row, row: 0 });
+          // this.listRef.scrollToIndexPath({ section: row, row: 0 });
+          foods[row].selected = true;
+          foods[this.selectedIndex].selected = false;
+          this.selectedIndex = row;
+          this.indexes.reloadData();
         }}
       >
         <Text style={{ fontSize: 18 }} fontWeight={300}>
@@ -166,16 +170,16 @@ class LargeListSample4 extends React.Component {
     foods[this.selectedIndex].selected = false;
     foods[section].selected = true;
     // 使用局部更新
-    this.indexes.reloadIndexPaths([
-      { section: 0, row: this.selectedIndex },
-      { section: 0, row: section }
-    ]);
+    // this.indexes.reloadIndexPaths([
+    //   { section: 0, row: this.selectedIndex },
+    //   { section: 0, row: section }
+    // ]);
     this.selectedIndex = section;
     // 使用更新所有数据源
-    // this.indexes.reloadData();
+    this.indexes.reloadData();
 
     let bFind = false;
-    this.indexes.visiableIndexPaths().forEach(indexPath=>{
+    this.indexes.visibleIndexPaths().forEach(indexPath=>{
       if (indexPath.row===section) {
         bFind = true;
       }

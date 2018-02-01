@@ -46,7 +46,7 @@ class LargeListSample extends React.Component {
         <TouchableOpacity
           style={{ flex:1, alignItems: "center", justifyContent: "center" }}
           onPress={() => {
-            this.largeList.scrollToIndexPath({section:1,row:50});
+            this.largeList.scrollToIndexPath({section:1,row:50},false);
           }}
         >
           <Text>ScrollToEnd</Text>
@@ -63,14 +63,15 @@ class LargeListSample extends React.Component {
             setTimeout(() => this.setState({ refreshing: false }), 2000);
           }}
           numberOfRowsInSection={section => this.props.numberOfEachSection}
-          numberOfSections={this.props.numberOfSections}
+          numberOfSections={()=>this.props.numberOfSections}
           heightForCell={(section, row) =>
             row % 2 ? this.minCellHeight : this.maxCellHeight}
           renderCell={this.renderItem.bind(this)}
           heightForSection={section =>
             section % 2 ? this.minSectionHeight : this.maxSectionHeight}
-          renderHeader={this.renderHeader.bind(this)}
-          renderFooter={this.renderFooter.bind(this)}
+          // renderHeader={this.renderHeader.bind(this)}
+          // renderFooter={this.renderFooter.bind(this)}
+          initialOffsetY={800}
           renderSection={section => {
             return (
               <View
@@ -106,7 +107,7 @@ class LargeListSample extends React.Component {
         break;
     }
     return (
-      <View
+      <TouchableOpacity
         tag={row}
         style={{
           flex: 1,
@@ -115,11 +116,14 @@ class LargeListSample extends React.Component {
           justifyContent: "center",
           alignItems: "center"
         }}
+        onPress={()=>{
+          console.log("onPress",section,row);
+        }}
       >
         <Text style={{ marginLeft: row % 3 * 50 }}>
           {"Section " + section + "  Row " + row}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 

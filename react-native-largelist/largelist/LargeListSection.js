@@ -18,9 +18,10 @@ interface IndexPath {
 
 class LargeListSection extends React.Component {
   static propTypes = {
-    numberOfSections: PropTypes.number,
+    numberOfSections: PropTypes.func,
     renderSection: PropTypes.func,
-    section: PropTypes.number
+    section: PropTypes.number,
+    heightForSection: PropTypes.func,
   };
 
   rootView: View;
@@ -30,14 +31,13 @@ class LargeListSection extends React.Component {
   section: IndexPath;
   waitForRender: boolean;
 
-  forceUpdate() {
+  contentUpdate() {
     if (this.waitForRender)
       this.rootView.setNativeProps({
         style: { top: this.top, height: this.height }
       });
     this.waitForRender = false;
-
-    this.setState({});
+    this.forceUpdate();
   }
 
   updateToSection(
@@ -60,18 +60,19 @@ class LargeListSection extends React.Component {
       });
       return;
     }
-    this.forceUpdate();
+    this.contentUpdate();
   }
 
   constructor(props) {
     super(props);
-    this.top = props.style.top;
+    this.top = props.style[1].top;
     this.height = props.style.height;
     this.section = props.section;
   }
 
   render() {
-    let show = this.section>=0 && this.section<this.props.numberOfSections && this.top !== -10000;
+    let show = this.section>=0 && this.section<this.props.numberOfSections();// && this.top !== -10000;
+    if (show && !this.height) this.height = this.props.heightForSection(this.section);
     return (
       <View
         ref={ref => (this.rootView = ref)}
